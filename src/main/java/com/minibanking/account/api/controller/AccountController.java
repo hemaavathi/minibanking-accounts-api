@@ -44,7 +44,7 @@ public class AccountController {
 	
 	@RequestMapping("/account/{acId}")
 	public ResponseEntity<Map<String, Account>> getAccountById(@PathVariable Long acId) {
-		logger.info("Entering getAccountsById");
+		logger.info("Entering getAccountById");
 		Optional<Account> account = accountService.getAccountById(acId);
 		Map<String, Account> responseMap = new HashMap<>();
 		if(account.isPresent()) {
@@ -53,6 +53,7 @@ public class AccountController {
 			throw new AccountException(4000,"Account not found", HttpStatus.NOT_FOUND);
 		}
 		ResponseEntity<Map<String, Account>> entity = new ResponseEntity<>(responseMap, HttpStatus.OK);
+		logger.info("Exiting getAccountById");
 		return entity;		
 	}
 	

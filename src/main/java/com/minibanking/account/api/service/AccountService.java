@@ -92,7 +92,7 @@ public class AccountService {
 		// We need to map the response object, so creating an instance of ObjectMapper.
 		ObjectMapper mapper = new ObjectMapper();
 
-		// Our customer response is in this form. So creating an instance of it.
+		// customer response is in this form. So creating an instance of it.
 		Map<String, CustomerApiResponse> response = null;
 
 		// I need to hold final customer object. so creating an instance of it.

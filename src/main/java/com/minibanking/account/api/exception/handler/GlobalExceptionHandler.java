@@ -16,9 +16,9 @@ import com.minibanking.account.api.model.ErrorResponse;
 
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalExceptionHandler {
 	
-	Logger logger = LoggerFactory.getLogger(GlobalException.class);
+	Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
 	@ExceptionHandler(AccountException.class)
 	public ResponseEntity<Map<String,ErrorResponse>> handleAccountException(AccountException ae) {
