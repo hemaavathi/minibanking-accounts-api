@@ -12,12 +12,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.minibanking.account.api.model.AccountRequest;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonAutoDetect(fieldVisibility = Visibility.ANY)
 @Entity
 public class Account {

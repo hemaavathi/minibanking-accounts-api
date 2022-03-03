@@ -1,7 +1,9 @@
 package com.minibanking.account.api.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.minibanking.account.api.controller.AccountController;
+import com.minibanking.account.api.entity.Account;
 import com.minibanking.account.api.service.AccountService;
 
 @WebMvcTest(AccountController.class)
@@ -23,21 +25,21 @@ public class AccountControllerTests {
 	@Autowired
 	MockMvc mockMvc;
 
-//	@Test
-//	public void testAddAccount() {
-//		AccountRequest accountRequest = new AccountRequest("savings","123456", "sam@gmail.com");
-//		Long id = 1002022001L;
-//		
-//		
-//	}
 	
 	@Test
 	public void testGetAccountById() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/account/{acId}")
-				.contentType(MediaType.APPLICATION_JSON))
-		.andExpect(status().isBadRequest())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON)
-				);
+				
+		Account account = new Account();
+		account.setAcNo(2002022001L);
+
+		when(accountService.getAccountById(2002022001L)).thenReturn(Optional.of(account));
 		
+		mockMvc.perform(MockMvcRequestBuilders.get("/account/4002022002L")
+				.contentType(MediaType.APPLICATION_JSON))
+				
+		.andExpect(status().isBadRequest());
+	
 	}
+	
+	
 }

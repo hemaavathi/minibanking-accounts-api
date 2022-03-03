@@ -13,7 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 	List<Account> findAccountsByCustomerId(Long customerId);
 	
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("Update Account set status = 'INACTIVE' where acNo = :acId")
 	void closeAccount(@Param("acId") Long accountId);
 	

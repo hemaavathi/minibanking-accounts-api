@@ -12,10 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.minibanking.account.api.entity.Account;
@@ -31,7 +33,7 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 	
-	@RequestMapping("/accounts")
+	@GetMapping("/accounts")
 	public ResponseEntity<Map<String,List<Account>>> getAllAccounts(){
 		logger.info("Entering getAllAccounts");
 		List<Account> accList = accountService.getAllAccounts();
@@ -42,7 +44,7 @@ public class AccountController {
 		return entity;
 	}
 	
-	@RequestMapping("/account/{acId}")
+	@GetMapping("/account/{acId}")
 	public ResponseEntity<Map<String, Account>> getAccountById(@PathVariable Long acId) {
 		logger.info("Entering getAccountById");
 		Optional<Account> account = accountService.getAccountById(acId);
@@ -57,14 +59,14 @@ public class AccountController {
 		return entity;		
 	}
 	
-	@RequestMapping(method = RequestMethod.POST, value ="/customer/{id}/account")
+	@PostMapping("/customer/{id}/account")
 	public ResponseEntity<Map<String, Long>>  addAccount(@Valid @RequestBody AccountRequest accountRequest, @PathVariable Long id) {
 		logger.info("Entering addAccount");
 		return accountService.addAccount(id, accountRequest);
 	
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE, value = "/customer/{id}/account/{acId}")
+	@DeleteMapping("/customer/{id}/account/{acId}")
 	public ResponseEntity<Map<String, String>>  deleteAccount(@PathVariable Long id, @PathVariable Long acId) {
 		logger.info("Entering deleteAccount");
 		accountService.deleteAccount(id,acId);
@@ -72,15 +74,14 @@ public class AccountController {
 		msg.put("message", "Deleted account successfully");
 		return new ResponseEntity<>(msg,HttpStatus.OK);
 	}
-	
-		
-	@RequestMapping("/customer/{id}/accounts")
+			
+	@GetMapping("/customer/{id}/accounts")
 	public List<Account> getAccountsByCustomerId(@PathVariable Long id){
 		logger.info("Entering getAccountsByCustomerId");
 		return accountService.getAccountsByCustomerId(id);
 	}
 	
-	@RequestMapping(method = RequestMethod.PATCH, value = "/customer/{id}/closeAccount/{acId}")
+	@PatchMapping("/customer/{id}/closeAccount/{acId}")
 	public ResponseEntity<Map<String, String>> closeAccount(@PathVariable Long id, @PathVariable Long acId) {
 		logger.info("Entering closeAccount");
 		accountService.closeAccount(id, acId);
@@ -89,7 +90,7 @@ public class AccountController {
 		return new ResponseEntity<>(msg,HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.PATCH, value = "/customer/{id}/closeAccounts")	
+	@PatchMapping("/customer/{id}/closeAccounts")	
 	public ResponseEntity<Map<String, String>> closeCustomerAccounts(@PathVariable Long id) {
 		logger.info("Entering closeCustomerAccounts");
 		accountService.closeCustomerAccounts(id);

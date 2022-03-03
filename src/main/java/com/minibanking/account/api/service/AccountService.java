@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,12 @@ public class AccountService {
 	
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Value("${customerservice.hostname:localhost}")
+	private String hostname;
+	
+	@Value("${customerservice.port:8080}")
+	private String port;
 
 	public List<Account> getAllAccounts(){
 		logger.info("Entering getAllAccounts");
@@ -100,7 +107,7 @@ public class AccountService {
 
 		try {
 			// Calling the service and getting the response in the form of string.
-			ResponseEntity<String> body = restTemplate.getForEntity("http://localhost:8080/customer/{id}", String.class, param);
+			ResponseEntity<String> body = restTemplate.getForEntity("http://" + hostname + ":" + port + "/customer/{id}", String.class, param);
 			if (body.hasBody()) {
 				// now deserialise the json string into java object using mapper instance
 				response = mapper.readValue(body.getBody(), new TypeReference<Map<String, CustomerApiResponse>>(){});
@@ -121,18 +128,20 @@ public class AccountService {
 	@Transactional
 	public void closeAccount(Long id, Long acId) {
 		logger.info("Entering closeAccount");
-		Optional<Account> account = accountRepository.findById(acId);
-		if(account.isPresent()) {
-			Account acc = account.get();
-			if (acc.getCustomerId().equals(id)) {
-				accountRepository.closeAccount(acId);
+		CustomerApiResponse customer = getCustomerDetails(id);
+		if(customer != null && customer.getId().equals(id)) {	
+			Optional<Account> account = accountRepository.findById(acId);
+			if(account.isPresent()) {
+				Account acc = account.get();
+				if (acc.getCustomerId().equals(id)) {
+					accountRepository.closeAccount(acId);
+				} else {
+					throw new AccountException(3000, "Account does not belong to this customer", HttpStatus.BAD_REQUEST);
+				}			
 			} else {
-				throw new AccountException(3000, "Account does not belong to this customer", HttpStatus.BAD_REQUEST);
-			}			
-		} else {
-			throw new AccountException(3010, "Account does not exist", HttpStatus.BAD_REQUEST);
+				throw new AccountException(3010, "Account does not exist", HttpStatus.BAD_REQUEST);
+			}
 		}
-		
 	}
 	
 	@Transactional
@@ -145,5 +154,15 @@ public class AccountService {
 			throw new AccountException(2000, "Customer not found", HttpStatus.NOT_FOUND);
 		}
 		
+	}
+	
+	// The below methods will be used for test cases to inject properties
+	// from test classes as a workaround solution.
+	public void setHostName(String hostname) {
+		this.hostname = hostname;
+	}
+	
+	public void setPort(String port) {
+		this.port = port;
 	}
 }
