@@ -35,10 +35,10 @@ public class AccountService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Value("${customerservice.hostname:localhost}")
+	@Value("${customerservice.hostname}")
 	private String hostname;
 	
-	@Value("${customerservice.port:8080}")
+	@Value("${customerservice.port}")
 	private String port;
 
 	public List<Account> getAllAccounts(){
