@@ -1,0 +1,2 @@
+INSERT IGNORE INTO account_no (next_val)
+VALUES (2002022001);
